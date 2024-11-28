@@ -1,0 +1,225 @@
+#include <stdio.h>
+#define MAX 5  // Defining maximum size of queue
+
+// Defining Circular Queue structure
+struct Queue {
+    int items[MAX];
+    int front, rear;
+};
+
+// Function to initialize the queue
+void initialize(struct Queue *q) {
+    q->front = -1;
+    q->rear = -1;
+}
+
+// Function to check if the queue is full
+int isFull(struct Queue *q) {
+    if ((q->rear + 1) % MAX == q->front)
+        return 1; // Queue is full
+    return 0;
+}
+
+// Function to check if the queue is empty
+int isEmpty(struct Queue *q) {
+    if (q->front == -1)
+        return 1; // Queue is empty
+    return 0;
+}
+
+// Function to enqueue (add element to queue)
+void enqueue(struct Queue *q, int value) {
+    if (isFull(q)) {
+        printf("Queue is Full!\n");
+        return;
+    }
+    if (q->front == -1) {
+        q->front = 0; // First element to be enqueued
+    }
+    q->rear = (q->rear + 1) % MAX; // Circular increment of rear
+    q->items[q->rear] = value;
+    printf("Enqueued: %d\n", value);
+}
+
+// Function to dequeue (remove element from queue)
+int dequeue(struct Queue *q) {
+    if (isEmpty(q)) {
+        printf("Queue is Empty!\n");
+        return -1;
+    }
+    int value = q->items[q->front];
+    if (q->front == q->rear) {
+        q->front = q->rear = -1; // Queue becomes empty
+    } else {
+        q->front = (q->front + 1) % MAX; // Circular increment of front
+    }
+    return value;
+}
+
+// Function to display the queue
+void display(struct Queue *q) {
+    if (isEmpty(q)) {
+        printf("Queue is Empty!\n");
+        return;
+    }
+    printf("Queue: ");
+    int i = q->front;
+    while (i != q->rear) {
+        printf("%d ", q->items[i]);
+        i = (i + 1) % MAX;
+    }
+    printf("%d\n", q->items[q->rear]);
+}
+
+// Main function to test Circular Queue
+int main() {
+    struct Queue q;
+    initialize(&q);
+
+    enqueue(&q, 10);
+    enqueue(&q, 20);
+    enqueue(&q, 30);
+    enqueue(&q, 40);
+    enqueue(&q, 50);
+
+    display(&q);
+
+    printf("Dequeued: %d\n", dequeue(&q));
+    display(&q);
+
+    enqueue(&q, 60);
+    display(&q);
+
+    return 0;
+}
+Output:
+makefile
+Copy code
+Enqueued: 10
+Enqueued: 20
+Enqueued: 30
+Enqueued: 40
+Enqueued: 50
+Queue: 10 20 30 40 50
+Dequeued: 10
+Queue: 20 30 40 50
+Enqueued: 60
+Queue: 20 30 40 50 60
+ii) Searching Operations (Linear Search and Binary Search in C)
+a) Linear Search (Recursive and Non-Recursive)
+Non-Recursive Linear Search:
+c
+Copy code
+#include <stdio.h>
+
+// Non-recursive Linear Search Function
+int linearSearchNonRecursive(int arr[], int n, int key) {
+    for (int i = 0; i < n; i++) {
+        if (arr[i] == key)
+            return i; // Key found at index i
+    }
+    return -1; // Key not found
+}
+
+// Main function to test Linear Search
+int main() {
+    int arr[] = {10, 20, 30, 40, 50};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    int key = 30;
+
+    int result = linearSearchNonRecursive(arr, n, key);
+    if (result != -1)
+        printf("Key %d found at index %d\n", key, result);
+    else
+        printf("Key %d not found\n", key);
+
+    return 0;
+}
+Recursive Linear Search:
+c
+Copy code
+#include <stdio.h>
+
+// Recursive Linear Search Function
+int linearSearchRecursive(int arr[], int n, int key, int index) {
+    if (index >= n)
+        return -1; // Key not found
+    if (arr[index] == key)
+        return index; // Key found at index
+    return linearSearchRecursive(arr, n, key, index + 1); // Recursive call
+}
+
+// Main function to test Recursive Linear Search
+int main() {
+    int arr[] = {10, 20, 30, 40, 50};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    int key = 30;
+
+    int result = linearSearchRecursive(arr, n, key, 0);
+    if (result != -1)
+        printf("Key %d found at index %d\n", key, result);
+    else
+        printf("Key %d not found\n", key);
+
+    return 0;
+}
+b) Binary Search (Recursive and Non-Recursive)
+Non-Recursive Binary Search:
+c
+Copy code
+#include <stdio.h>
+
+int binarySearchNonRecursive(int arr[], int n, int key) {
+    int left = 0, right = n - 1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (arr[mid] == key)
+            return mid; // Key found at mid
+        if (arr[mid] < key)
+            left = mid + 1; // Search the right half
+        else
+            right = mid - 1; // Search the left half
+    }
+    return -1; // Key not found
+}
+
+int main() {
+    int arr[] = {10, 20, 30, 40, 50};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    int key = 30;
+
+    int result = binarySearchNonRecursive(arr, n, key);
+    if (result != -1)
+        printf("Key %d found at index %d\n", key, result);
+    else
+        printf("Key %d not found\n", key);
+
+    return 0;
+}
+Recursive Binary Search:
+c
+Copy code
+#include <stdio.h>
+int binarySearchRecursive(int arr[], int left, int right, int key) {
+    if (left > right)
+        return -1; // Key not found
+    int mid = left + (right - left) / 2;
+    if (arr[mid] == key)
+        return mid; // Key found at mid
+    if (arr[mid] < key)
+        return binarySearchRecursive(arr, mid + 1, right, key); // Search right half
+    return binarySearchRecursive(arr, left, mid - 1, key); // Search left half
+}
+int main() {
+    int arr[] = {10, 20, 30, 40, 50};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    int key = 30;
+
+    int result = binarySearchRecursive(arr, 0, n - 1, key);
+    if (result != -1)
+        printf("Key %d found at index %d\n", key, result);
+    else
+        printf("Key %d not found\n", key);
+
+    return 0;
+}
