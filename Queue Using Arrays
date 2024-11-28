@@ -1,0 +1,58 @@
+#include <iostream>
+#define MAX 100
+
+using namespace std;
+
+class QueueArray {
+private:
+    int front, rear, size;
+    int queue[MAX];
+
+public:
+    QueueArray() {
+        front = -1;
+        rear = -1;
+        size = MAX;
+    }
+    void enqueue(int value) {
+        if (rear == size - 1) {
+            cout << "Queue Overflow!" << endl;
+            return;
+        }
+        if (front == -1) front = 0; // Initialize front
+        queue[++rear] = value;
+        cout << value << " enqueued to the queue." << endl;
+    }
+    void dequeue() {
+        if (front == -1 || front > rear) {
+            cout << "Queue Underflow!" << endl;
+            return;
+        }
+        cout << queue[front++] << " dequeued from the queue." << endl;
+        if (front > rear) front = rear = -1; // Reset queue
+    }
+    void display() {
+        if (front == -1 || front > rear) {
+            cout << "Queue is empty." << endl;
+            return;
+        }
+        cout << "Queue elements: ";
+        for (int i = front; i <= rear; i++)
+            cout << queue[i] << " ";
+        cout << endl;
+    }
+};
+
+int main() {
+    QueueArray q;
+
+    q.enqueue(10);
+    q.enqueue(20);
+    q.enqueue(30);
+    q.display();
+
+    q.dequeue();
+    q.display();
+
+    return 0;
+}
