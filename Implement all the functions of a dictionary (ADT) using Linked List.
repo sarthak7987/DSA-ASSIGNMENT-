@@ -1,0 +1,106 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+typedef struct Node {
+    char key[50];
+    char value[50];
+    struct Node* next;
+} Node;
+
+// Function prototypes
+Node* createNode(const char* key, const char* value);
+void insert(Node** head, const char* key, const char* value);
+void deleteKey(Node** head, const char* key);
+void search(Node* head, const char* key);
+void display(Node* head);
+
+// Create a new node
+Node* createNode(const char* key, const char* value) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    strcpy(newNode->key, key);
+    strcpy(newNode->value, value);
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Insert a key-value pair into the dictionary
+void insert(Node** head, const char* key, const char* value) {
+    Node* newNode = createNode(key, value);
+    newNode->next = *head;
+    *head = newNode;
+    printf("Inserted: [%s] -> [%s]\n", key, value);
+}
+
+// Delete a key-value pair from the dictionary
+void deleteKey(Node** head, const char* key) {
+    Node *temp = *head, *prev = NULL;
+
+    while (temp != NULL && strcmp(temp->key, key) != 0) {
+        prev = temp;
+        temp = temp->next;
+    }
+
+    if (temp == NULL) {
+        printf("Key [%s] not found.\n", key);
+        return;
+    }
+
+    if (prev == NULL)
+        *head = temp->next;
+    else
+        prev->next = temp->next;
+
+    printf("Deleted: [%s]\n", key);
+    free(temp);
+}
+
+// Search for a value by key in the dictionary
+void search(Node* head, const char* key) {
+    Node* current = head;
+    while (current != NULL) {
+        if (strcmp(current->key, key) == 0) {
+            printf("Found: [%s] -> [%s]\n", key, current->value);
+            return;
+        }
+        current = current->next;
+    }
+    printf("Key [%s] not found.\n", key);
+}
+
+// Display all key-value pairs in the dictionary
+void display(Node* head) {
+    if (head == NULL) {
+        printf("Dictionary is empty.\n");
+        return;
+    }
+
+    printf("Dictionary contents:\n");
+    Node* current = head;
+    while (current != NULL) {
+        printf("[%s] -> [%s]\n", current->key, current->value);
+        current = current->next;
+    }
+}
+
+// Main function to demonstrate dictionary operations
+int main() {
+    Node* dictionary = NULL;
+
+    // Insert key-value pairs
+    insert(&dictionary, "name", "Alice");
+    insert(&dictionary, "age", "25");
+    insert(&dictionary, "city", "New York");
+
+    display(dictionary);
+
+    search(dictionary, "age");
+    search(dictionary, "country");
+
+    deleteKey(&dictionary, "age");
+
+    display(dictionary);
+
+    search(dictionary, "age");
+
+    return 0;
+}
