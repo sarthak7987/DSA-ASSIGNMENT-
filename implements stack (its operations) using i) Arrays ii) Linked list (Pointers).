@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX 5
+
+// Stack using Arrays
+typedef struct {
+    int items[MAX];
+    int top;
+} StackArray;
+
+// Initialize stack
+void initArrayStack(StackArray *stack) {
+    stack->top = -1;
+}
+
+// Push operation
+void pushArray(StackArray *stack, int value) {
+    if (stack->top == MAX - 1) {
+        printf("Stack Overflow (Array)\n");
+    } else {
+        stack->items[++stack->top] = value;
+        printf("Pushed %d to stack (Array)\n", value);
+    }
+}
+
+// Pop operation
+int popArray(StackArray *stack) {
+    if (stack->top == -1) {
+        printf("Stack Underflow (Array)\n");
+        return -1;
+    } else {
+        return stack->items[stack->top--];
+    }
+}
+
+// Display stack
+void displayArrayStack(StackArray *stack) {
+    if (stack->top == -1) {
+        printf("Stack is empty (Array)\n");
+    } else {
+        printf("Stack contents (Array): ");
+        for (int i = stack->top; i >= 0; i--) {
+            printf("%d ", stack->items[i]);
+        }
+        printf("\n");
+    }
+}
+Stack Implementation Using Linked List (Pointers)
+c
+Copy code
+// Stack using Linked List
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+// Push operation
+void pushLinkedList(Node **top, int value) {
+    Node *newNode = (Node *)malloc(sizeof(Node));
+    if (newNode == NULL) {
+        printf("Stack Overflow (Linked List)\n");
+        return;
+    }
+    newNode->data = value;
+    newNode->next = *top;
+    *top = newNode;
+    printf("Pushed %d to stack (Linked List)\n", value);
+}
+
+// Pop operation
+int popLinkedList(Node **top) {
+    if (*top == NULL) {
+        printf("Stack Underflow (Linked List)\n");
+        return -1;
+    } else {
+        Node *temp = *top;
+        int value = temp->data;
+        *top = (*top)->next;
+        free(temp);
+        return value;
+    }
+}
