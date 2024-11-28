@@ -1,0 +1,141 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+Node* last = NULL;
+
+// Function to create a circular linked list
+void create(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+    if (last == NULL) {
+        last = newNode;
+        last->next = last;
+    } else {
+        newNode->next = last->next;
+        last->next = newNode;
+        last = newNode;
+    }
+}
+
+// Function to insert a node in the circular linked list
+void insert(int data, int position) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+    if (last == NULL) {
+        printf("List is empty, creating the list.\n");
+        create(data);
+        return;
+    }
+    Node* temp = last->next;
+    if (position == 1) {
+        newNode->next = temp;
+        last->next = newNode;
+    } else {
+        for (int i = 1; i < position - 1 && temp != last; i++) {
+            temp = temp->next;
+        }
+        newNode->next = temp->next;
+        temp->next = newNode;
+        if (temp == last) {
+            last = newNode;
+        }
+    }
+}
+
+// Function to delete a node from the circular linked list
+void deleteNode(int position) {
+    if (last == NULL) {
+        printf("List is empty.\n");
+        return;
+    }
+    Node* temp = last->next;
+    if (position == 1) {
+        if (last == last->next) {
+            free(last);
+            last = NULL;
+        } else {
+            last->next = temp->next;
+            free(temp);
+        }
+    } else {
+        Node* prev = NULL;
+        for (int i = 1; i < position && temp != last; i++) {
+            prev = temp;
+            temp = temp->next;
+        }
+        if (temp == last && temp->next != last) {
+            prev->next = temp->next;
+            last = prev;
+        } else {
+            prev->next = temp->next;
+        }
+        free(temp);
+    }
+}
+
+// Function to traverse the circular linked list
+void traverse() {
+    if (last == NULL) {
+        printf("List is empty.\n");
+        return;
+    }
+    Node* temp = last->next;
+    do {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    } while (temp != last->next);
+    printf("(back to start)\n");
+}
+
+// Main function
+int main() {
+    int choice, data, position;
+
+    while (1) {
+        printf("\nMenu:\n");
+        printf("1. Create\n");
+        printf("2. Insert\n");
+        printf("3. Delete\n");
+        printf("4. Traverse\n");
+        printf("5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+        case 1:
+            printf("Enter data to create: ");
+            scanf("%d", &data);
+            create(data);
+            break;
+        case 2:
+            printf("Enter data to insert: ");
+            scanf("%d", &data);
+            printf("Enter position: ");
+            scanf("%d", &position);
+            insert(data, position);
+            break;
+        case 3:
+            printf("Enter position to delete: ");
+            scanf("%d", &position);
+            deleteNode(position);
+            break;
+        case 4:
+            printf("Circular Linked List: ");
+            traverse();
+            break;
+        case 5:
+            exit(0);
+        default:
+            printf("Invalid choice. Please try again.\n");
+        }
+    }
+    return 0;
+}
+
+
